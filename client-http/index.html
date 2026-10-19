@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infosys | Client - Application Programming Interface</title>
+    <link rel="stylesheet" href="styles/application-styles.css">
+</head>
+<body>
+    <!-- Top header: product name and global actions -->
+    <header>
+        <div class="application-brand">⚡ HTTP Client</div>
+        <div class="header-action-list">
+            <http-client-button id="historyToggleButton" variant="ghost" label="🕘 History" title="Request history"></http-client-button>
+            <http-client-button id="layoutToggleButton" variant="ghost" label="Layout" title="Toggle horizontal / vertical layout"></http-client-button>
+            <http-client-button id="themeToggleButton" variant="ghost" label="🌓" title="Toggle theme"></http-client-button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Method selector, URL box and Send / Cancel / cURL actions -->
+        <http-client-request-bar id="requestBar"></http-client-request-bar>
+
+        <!-- Resizable workspace: request editor (start pane) and response viewer (end pane) -->
+        <http-client-split-pane id="splitPane" direction="horizontal" storage-key="httpClient.splitPane">
+            <section class="content-pane" slot="start">
+                <http-client-request-editor id="requestEditor"></http-client-request-editor>
+            </section>
+            <section class="content-pane" slot="end">
+                <http-client-response-viewer id="responseViewer"></http-client-response-viewer>
+            </section>
+        </http-client-split-pane>
+    </main>
+
+    <!-- Slide-in list of previous requests (hidden until opened) -->
+    <http-client-request-history id="requestHistory" storage-key="httpClient.requestHistory"></http-client-request-history>
+
+    <footer>Requests are sent directly from your browser using <code>fetch()</code>. History is stored locally (secrets are not saved).</footer>
+
+    <!--
+        Script order matters (classic scripts, so the page works from file://):
+        shared code -> primitive components -> layout components -> composite components -> application wiring.
+    -->
+    <script src="scripts/shared-utilities.js"></script>
+    <script src="scripts/http-request-service.js"></script>
+    <script src="scripts/components/http-client-button.js"></script>
+    <script src="scripts/components/http-client-copy-button.js"></script>
+    <script src="scripts/components/http-client-form-field.js"></script>
+    <script src="scripts/components/http-client-segmented-toggle.js"></script>
+    <script src="scripts/components/http-client-key-value-editor.js"></script>
+    <script src="scripts/components/http-client-tab-panel.js"></script>
+    <script src="scripts/components/http-client-tabs.js"></script>
+    <script src="scripts/components/http-client-split-pane.js"></script>
+    <script src="scripts/components/http-client-request-bar.js"></script>
+    <script src="scripts/components/http-client-request-editor.js"></script>
+    <script src="scripts/components/http-client-response-viewer.js"></script>
+    <script src="scripts/components/http-client-request-history.js"></script>
+    <script src="scripts/application-entry-point.js"></script>
+</body>
+</html>

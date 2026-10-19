@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Theme tokens. Custom properties are inherited by every custom element,
+   including the Shadow DOM of <http-client-split-pane>.
+   ========================================================================== */
+:root {
+    --bg: #f5f6f8;            /* page background */
+    --panel: #fff;            /* cards, panes, header */
+    --border: #d9dde3;        /* all borders and dividers */
+    --text: #1f2430;          /* main text */
+    --muted: #6b7280;         /* secondary text */
+    --accent: #0b6bcb;        /* primary buttons, active tab, splitter highlight */
+    --accent-text: #fff;      /* text on top of the accent colour */
+    --danger: #d92d20;        /* errors and destructive actions */
+    --ok: #12a150;            /* 2xx responses */
+    --warn: #c27803;          /* 3xx responses */
+    --input: #fff;            /* form control background */
+    --code-bg: #fafbfc;       /* response area background */
+    --hover: #eef1f5;         /* hover background */
+    --json-key-colour: #0b6bcb; --json-string-colour: #067d4a; --json-number-colour: #b45309;
+    --json-boolean-colour: #9333ea; --json-null-colour: #6b7280;
+}
+[data-theme="dark"] {
+    --bg: #14171c; --panel: #1c2027; --border: #2f3541; --text: #e4e7ec; --muted: #8b93a1;
+    --accent: #4c9aff; --accent-text: #0b1220; --danger: #f97066; --ok: #47cd89; --warn: #fdb022;
+    --input: #14171c; --code-bg: #171a20; --hover: #262b34;
+    --json-key-colour: #7cb8ff; --json-string-colour: #6ee7a8; --json-number-colour: #fbbf24;
+    --json-boolean-colour: #c4a1ff; --json-null-colour: #8b93a1;
+}
+
+/* ==========================================================================
+   Base styles and page layout
+   ========================================================================== */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+    display: flex; flex-direction: column; background: var(--bg); color: var(--text);
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+code, textarea, pre, .monospace-text { font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; }
+code { background: var(--hover); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+/* Makes the `hidden` attribute win over any display rule, including on custom elements. */
+[hidden] { display: none !important; }
+
+header {
+    display: flex; align-items: center; justify-content: space-between; padding: 8px 14px;
+    background: var(--panel); border-bottom: 1px solid var(--border);
+}
+.application-brand { font-weight: 700; font-size: 16px; }
+.header-action-list { display: flex; gap: 6px; }
+main { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 10px 12px; gap: 10px; }
+footer { padding: 4px 14px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--border); background: var(--panel); }
+
+/* A card holding either the request editor or the response viewer. */
+.content-pane {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* Small generic helpers used across components */
+.hint-text { color: var(--muted); font-size: 12px; }
+.error-text { color: var(--danger); font-size: 12px; margin-left: 8px; }
+.inline-row { display: flex; align-items: center; gap: 8px; }
+.inline-row.allow-wrap { flex-wrap: wrap; }
+.two-column-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.authentication-fields { display: flex; flex-direction: column; gap: 8px; }
+
+/* ==========================================================================
+   <http-client-button> and <http-client-copy-button>
+   ========================================================================== */
+http-client-button, http-client-copy-button { display: inline-block; }
+.button-control {
+    border: 1px solid var(--border); background: var(--panel); color: var(--text); padding: 6px 12px;
+    border-radius: 6px; cursor: pointer; font: inherit; white-space: nowrap;
+}
+.button-control:hover:not(:disabled) { background: var(--hover); }
+.button-control:disabled { opacity: .5; cursor: not-allowed; }
+.button-control.variant-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; padding: 6px 22px; }
+.button-control.variant-primary:hover:not(:disabled) { filter: brightness(1.08); background: var(--accent); }
+.button-control.variant-danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+.button-control.variant-danger:hover:not(:disabled) { background: var(--danger); filter: brightness(1.08); }
+.button-control.variant-ghost { border-color: transparent; background: transparent; }
+.button-control.variant-ghost:hover:not(:disabled) { background: var(--hover); }
+.button-control.size-small { padding: 2px 8px; font-size: 12px; }
+
+/* ==========================================================================
+   <http-client-form-field>
+   ========================================================================== */
+http-client-form-field { display: block; min-width: 0; }
+http-client-form-field input[type=text], http-client-form-field input[type=password], http-client-form-field input[type=number],
+http-client-form-field input:not([type]), http-client-form-field select, http-client-form-field textarea {
+    background: var(--input); color: var(--text); border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 8px; font: inherit; min-width: 0;
+}
+/* Visible keyboard focus ring for every form control. */
+http-client-form-field input:focus, http-client-form-field select:focus, http-client-form-field textarea:focus,
+http-client-key-value-editor input:focus, http-client-key-value-editor select:focus {
+    outline: 2px solid color-mix(in srgb, var(--accent) 50%, transparent); border-color: var(--accent);
+}
+/* Bare controls (no label) fill the width of their field. */
+http-client-form-field > input, http-client-form-field > select, http-client-form-field > textarea { width: 100%; }
+.labelled-field { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--muted); max-width: 420px; }
+.labelled-field input, .labelled-field select { color: var(--text); font-size: 14px; }
+.checkbox-label { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.radio-option-group label { cursor: pointer; }
+.two-column-grid .labelled-field { max-width: none; }
+
+/* ==========================================================================
+   <http-client-segmented-toggle>
+   ========================================================================== */
+http-client-segmented-toggle { display: inline-block; }
+.segmented-toggle-group { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.segmented-toggle-group button { border: 0; background: var(--panel); color: var(--text); padding: 3px 10px; cursor: pointer; font: inherit; font-size: 12px; }
+.segmented-toggle-group button + button { border-left: 1px solid var(--border); }
+.segmented-toggle-group button.is-active { background: var(--accent); color: var(--accent-text); }
+
+/* ==========================================================================
+   <http-client-key-value-editor>
+   ========================================================================== */
+http-client-key-value-editor { display: block; }
+.key-value-list { display: flex; flex-direction: column; gap: 4px; }
+.key-value-row { display: flex; gap: 4px; align-items: center; }
+.key-value-row input[type=text], .key-value-row select {
+    background: var(--input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font: inherit;
+}
+.key-value-row input[type=text] { flex: 1; min-width: 0; }
+.key-value-row select { width: 80px; }
+.key-value-row input[type=file] { flex: 1; min-width: 0; font-size: 12px; }
+/* Rows whose checkbox is cleared are dimmed. */
+.key-value-row.row-disabled input[type=text] { opacity: .5; }
+.key-value-delete-button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 0 6px; }
+.key-value-delete-button:hover { color: var(--danger); }
+
+/* ==========================================================================
+   <http-client-tabs> and <http-client-tab-panel>
+   ========================================================================== */
+http-client-tabs { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; }
+.tab-bar { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex: none; min-width: 0; }
+.tab-button-list { display: flex; overflow-x: auto; }
+.tab-button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 14px; color: var(--muted); cursor: pointer; font: inherit; white-space: nowrap; }
+.tab-button:hover { color: var(--text); }
+.tab-button.is-active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+.tab-badge { background: var(--accent); color: var(--accent-text); border-radius: 9px; padding: 0 6px; font-size: 11px; }
+/* Panels are hidden unless the parent marks them `active`. */
+http-client-tab-panel { display: none; flex: 1; min-height: 0; overflow: auto; padding: 10px; flex-direction: column; gap: 8px; }
+http-client-tab-panel[active] { display: flex; }
+
+/* ==========================================================================
+   <http-client-request-bar>
+   ========================================================================== */
+http-client-request-bar { display: block; }
+.request-bar-form { display: flex; gap: 6px; }
+.request-bar-form http-client-form-field[name=requestUrl] { flex: 1; }
+.request-bar-form http-client-form-field[name=requestUrl] input { font-family: ui-monospace, Consolas, monospace; }
+.request-bar-form http-client-form-field[name=httpMethod] { width: 105px; }
+.request-bar-form http-client-form-field[name=httpMethod] select { font-weight: 700; }
+/* Narrow screens: the URL box moves to its own full-width line. */
+@media (max-width: 700px) {
+    .request-bar-form { flex-wrap: wrap; }
+    .request-bar-form http-client-form-field[name=requestUrl] { flex-basis: 100%; order: 3; }
+}
+
+/* ==========================================================================
+   <http-client-request-editor>
+   ========================================================================== */
+http-client-request-editor, http-client-response-viewer { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; }
+.raw-body-section { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; }
+http-client-form-field[name=rawBodyText] { flex: 1; display: flex; min-height: 160px; }
+http-client-form-field[name=rawBodyText] textarea { flex: 1; resize: none; tab-size: 2; }
+
+/* ==========================================================================
+   <http-client-response-viewer>
+   ========================================================================== */
+.response-summary { display: flex; gap: 10px; padding: 0 12px; font-size: 12px; white-space: nowrap; }
+.status-pill { font-weight: 700; }
+.status-success { color: var(--ok); }
+.status-redirect { color: var(--warn); }
+.status-error { color: var(--danger); }
+.response-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: none; }
+.response-toolbar http-client-form-field[name=jsonPathFilter] { flex: 1; min-width: 160px; }
+.response-toolbar http-client-form-field[name=jsonPathFilter] input { font-family: ui-monospace, Consolas, monospace; font-size: 12px; padding: 3px 8px; }
+.response-content-area { flex: 1; min-height: 0; overflow: auto; background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px; position: relative; }
+.response-content-area pre { margin: 0; font-size: 12.5px; white-space: pre-wrap; word-break: break-word; }
+.response-content-area.no-wrap pre { white-space: pre; word-break: normal; }
+.response-content-area iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
+.response-content-area img { max-width: 100%; }
+.placeholder-message { color: var(--muted); text-align: center; padding: 40px 10px; }
+.loading-message { color: var(--muted); text-align: center; padding: 40px; }
+.json-key { color: var(--json-key-colour); }
+.json-string { color: var(--json-string-colour); }
+.json-number { color: var(--json-number-colour); }
+.json-boolean { color: var(--json-boolean-colour); }
+.json-null { color: var(--json-null-colour); }
+.key-value-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.key-value-table td { padding: 4px 8px; border-bottom: 1px solid var(--border); vertical-align: top; word-break: break-all; }
+.key-value-table td:first-child { color: var(--json-key-colour); font-weight: 600; white-space: nowrap; width: 1%; word-break: normal; }
+
+/* ==========================================================================
+   <http-client-request-history>
+   ========================================================================== */
+http-client-request-history {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 340px; max-width: 90vw; z-index: 10;
+    display: flex; flex-direction: column; background: var(--panel);
+    border-left: 1px solid var(--border); box-shadow: -4px 0 16px rgba(0, 0, 0, .2);
+}
+.history-header { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); }
+http-client-request-history ul { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; }
+http-client-request-history li { padding: 8px 10px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+http-client-request-history li:hover { background: var(--hover); }
+.history-method { font-weight: 700; font-size: 11px; width: 52px; flex: none; color: var(--accent); }
+.history-url { font-size: 12px; word-break: break-all; flex: 1; }
+.history-time { color: var(--muted); font-size: 10px; flex: none; }
