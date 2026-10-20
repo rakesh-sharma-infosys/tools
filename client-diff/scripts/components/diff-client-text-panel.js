@@ -51,6 +51,10 @@ class DiffClientTextPanel extends HTMLElement {
         actionButtonGroupElement.append(pasteButtonElement, this._filePickerButtonElement, clearButtonElement);
         headerElement.append(headingElement, this._statusElement, actionButtonGroupElement);
 
+        // Small line above the text area showing the MD5 checksum of the current text.
+        this._checksumElement = document.createElement('div');
+        this._checksumElement.className = 'text-panel-checksum';
+
         // ---- the editable text area ----
         this._textAreaElement = Object.assign(document.createElement('textarea'), {
             placeholder: this.getAttribute('placeholder') ?? 'Paste text here, or upload / drop a file…',
@@ -78,7 +82,7 @@ class DiffClientTextPanel extends HTMLElement {
         });
 
         this._loadedFileName = '';
-        this.append(headerElement, this._textAreaElement);
+        this.append(headerElement, this._checksumElement, this._textAreaElement);
         this._refreshStatusText();
     }
 
@@ -122,8 +126,9 @@ class DiffClientTextPanel extends HTMLElement {
         }
     }
 
-    /** Updates the "file name · lines · characters" status text. */
+    /** Updates the "file name · lines · characters" status text and the MD5 checksum line. */
     _refreshStatusText() {
+        this._checksumElement.textContent = `MD5: ${Md5ChecksumCalculator.calculateChecksumOfText(this._textAreaElement.value)}`;
         const currentText = this._textAreaElement.value;
         const lineCount = DiffClientEngine.splitTextIntoLines(currentText).length;
         const countsText = `${lineCount} lines · ${currentText.length} chars`;

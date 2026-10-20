@@ -1,15 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Infosys | Client - Difference</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="main.css" />
 </head>
+
 <body>
+    <!-- Top header bar: product name on the left, global actions on the right -->
     <header>
-        <h1>Difference Checker</h1>
-        <p>Paste, upload or drop two texts / files and see what changed.</p>
+        <div class="application-brand">⚡ Difference Checker</div>
+        <div class="header-action-list">
+            <diff-client-theme-toggle id="theme-toggle"></diff-client-theme-toggle>
+        </div>
     </header>
 
     <main>
@@ -25,21 +30,22 @@
                 options="unified:Unified,horizontal:Horizontal split,vertical:Vertical split"
                 value="unified"></diff-client-segmented-toggle>
             <diff-client-option-checkbox id="ignore-case-checkbox" label="Ignore case"></diff-client-option-checkbox>
-            <diff-client-option-checkbox id="ignore-whitespace-checkbox" label="Ignore whitespace"></diff-client-option-checkbox>
+            <diff-client-option-checkbox id="ignore-whitespace-checkbox"
+                label="Ignore whitespace"></diff-client-option-checkbox>
             <button type="button" id="swap-button">⇄ Swap sides</button>
             <button type="button" id="clear-all-button">Clear all</button>
             <diff-client-diff-stats id="diff-statistics"></diff-client-diff-stats>
         </section>
 
-        <diff-client-diff-view id="diff-result-view" mode="unified"
-            left-heading="Original" right-heading="Modified"></diff-client-diff-view>
+        <diff-client-diff-view id="diff-result-view" mode="unified" left-heading="Original"
+            right-heading="Modified"></diff-client-diff-view>
     </main>
-
-    <footer>Everything runs locally in your browser; nothing is uploaded anywhere.</footer>
 
     <!-- Classic scripts (not modules) so the page also works when opened from file://. Order matters. -->
     <script src="scripts/diff-client-toolkit.js"></script>
     <script src="scripts/text-difference-engine.js"></script>
+    <script src="scripts/md5-checksum-calculator.js"></script>
+    <script src="scripts/components/diff-client-theme-toggle.js"></script>
     <script src="scripts/components/diff-client-segmented-toggle.js"></script>
     <script src="scripts/components/diff-client-option-checkbox.js"></script>
     <script src="scripts/components/diff-client-file-picker-button.js"></script>
@@ -49,4 +55,5 @@
     <script src="scripts/components/diff-client-diff-view.js"></script>
     <script src="main.js"></script>
 </body>
+
 </html>

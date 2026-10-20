@@ -14,20 +14,18 @@
     --monospace-font: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
     --line-height: 20px;
 }
-@media (prefers-color-scheme: dark) {
-    :root {
-        --page-background: #14161b;
-        --surface-background: #1c1f26;
-        --border-color: #343944;
-        --text-color: #e4e7ee;
-        --muted-text-color: #9aa3b5;
-        --accent-color: #6e9bff;
-        --added-background: #12301d;
-        --added-strong-background: #1f6a37;
-        --removed-background: #3a1b1d;
-        --removed-strong-background: #8a2f33;
-        --filler-background: #23262e;
-    }
+:root[data-theme="dark"] {
+    --page-background: #14161b;
+    --surface-background: #1c1f26;
+    --border-color: #343944;
+    --text-color: #e4e7ee;
+    --muted-text-color: #9aa3b5;
+    --accent-color: #6e9bff;
+    --added-background: #12301d;
+    --added-strong-background: #1f6a37;
+    --removed-background: #3a1b1d;
+    --removed-strong-background: #8a2f33;
+    --filler-background: #23262e;
 }
 
 /* ===== page layout ===== */
@@ -38,9 +36,16 @@ body {
     color: var(--text-color);
     font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
 }
-header, main, footer { max-width: 1600px; margin: 0 auto; padding: 12px 20px; }
-header h1 { margin: 0; font-size: 22px; }
-header p, footer { margin: 4px 0 0; color: var(--muted-text-color); font-size: 13px; }
+main, footer { max-width: 1600px; margin: 0 auto; padding: 12px 20px; }
+/* Full-width header bar like client-http: brand left, actions right, panel colour, bottom border. */
+header {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px;
+    background: var(--surface-background); border-bottom: 1px solid var(--border-color);
+}
+.application-brand { font-weight: 700; font-size: 16px; }
+.application-subtitle { margin-left: 10px; color: var(--muted-text-color); font-size: 13px; font-weight: 400; }
+.header-action-list { display: flex; gap: 6px; margin-left: auto; /* always pushed to the right edge */ }
+footer { margin: 4px 0 0; color: var(--muted-text-color); font-size: 13px; }
 main { display: flex; flex-direction: column; gap: 14px; }
 
 /* Two inputs side by side; stacked on narrow screens. */
@@ -61,6 +66,9 @@ button {
     cursor: pointer;
 }
 button:hover { border-color: var(--accent-color); }
+/* Borderless "ghost" look for header actions (as in client-http). */
+header button { border-color: transparent; background: transparent; }
+header button:hover { background: var(--filler-background); }
 
 /* ===== <diff-client-segmented-toggle> ===== */
 .segmented-toggle-group { display: inline-flex; }
@@ -93,6 +101,7 @@ diff-client-text-panel {
 diff-client-text-panel.is-drag-target { border-color: var(--accent-color); outline: 2px dashed var(--accent-color); outline-offset: -4px; }
 .text-panel-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .text-panel-status { color: var(--muted-text-color); font-size: 12px; margin-right: auto; }
+.text-panel-checksum { color: var(--muted-text-color); font: 11px var(--monospace-font); user-select: all; }
 .text-panel-actions { display: flex; gap: 6px; }
 diff-client-text-panel textarea {
     width: 100%;
