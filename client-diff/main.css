@@ -1,0 +1,163 @@
+/* ===== design tokens (light by default, dark when the system asks for it) ===== */
+:root {
+    --page-background: #f5f6f8;
+    --surface-background: #ffffff;
+    --border-color: #d5d9e0;
+    --text-color: #1f2430;
+    --muted-text-color: #667085;
+    --accent-color: #2f6fed;
+    --added-background: #e6ffec;
+    --added-strong-background: #aceebb;
+    --removed-background: #ffebe9;
+    --removed-strong-background: #ffc1ba;
+    --filler-background: #f0f1f4;
+    --monospace-font: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+    --line-height: 20px;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --page-background: #14161b;
+        --surface-background: #1c1f26;
+        --border-color: #343944;
+        --text-color: #e4e7ee;
+        --muted-text-color: #9aa3b5;
+        --accent-color: #6e9bff;
+        --added-background: #12301d;
+        --added-strong-background: #1f6a37;
+        --removed-background: #3a1b1d;
+        --removed-strong-background: #8a2f33;
+        --filler-background: #23262e;
+    }
+}
+
+/* ===== page layout ===== */
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--page-background);
+    color: var(--text-color);
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+header, main, footer { max-width: 1600px; margin: 0 auto; padding: 12px 20px; }
+header h1 { margin: 0; font-size: 22px; }
+header p, footer { margin: 4px 0 0; color: var(--muted-text-color); font-size: 13px; }
+main { display: flex; flex-direction: column; gap: 14px; }
+
+/* Two inputs side by side; stacked on narrow screens. */
+.input-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 800px) { .input-panels { grid-template-columns: 1fr; } }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.toolbar diff-client-diff-stats { margin-left: auto; }
+
+/* ===== shared button look (every plain <button> in the app) ===== */
+button {
+    font: inherit;
+    padding: 4px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--surface-background);
+    color: var(--text-color);
+    cursor: pointer;
+}
+button:hover { border-color: var(--accent-color); }
+
+/* ===== <diff-client-segmented-toggle> ===== */
+.segmented-toggle-group { display: inline-flex; }
+.segmented-toggle-group button { border-radius: 0; margin-left: -1px; }
+.segmented-toggle-group button:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+.segmented-toggle-group button:last-child { border-radius: 0 6px 6px 0; }
+.segmented-toggle-group button.is-active {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #fff;
+    position: relative; /* keeps the active border above its neighbours */
+}
+
+/* ===== <diff-client-option-checkbox> ===== */
+.option-checkbox-label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+
+/* ===== <diff-client-file-picker-button> ===== */
+diff-client-file-picker-button { display: inline-block; }
+
+/* ===== <diff-client-text-panel> ===== */
+diff-client-text-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    background: var(--surface-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+diff-client-text-panel.is-drag-target { border-color: var(--accent-color); outline: 2px dashed var(--accent-color); outline-offset: -4px; }
+.text-panel-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.text-panel-status { color: var(--muted-text-color); font-size: 12px; margin-right: auto; }
+.text-panel-actions { display: flex; gap: 6px; }
+diff-client-text-panel textarea {
+    width: 100%;
+    height: 220px;
+    resize: vertical;
+    padding: 8px;
+    font: 13px/1.5 var(--monospace-font);
+    background: var(--page-background);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    white-space: pre;
+    overflow: auto;
+}
+
+/* ===== <diff-client-diff-stats> ===== */
+diff-client-diff-stats { display: inline-flex; gap: 14px; font-weight: 600; }
+.diff-stats-added { color: #1a7f37; }
+.diff-stats-removed { color: #cf222e; }
+.diff-stats-unchanged, .diff-stats-message { color: var(--muted-text-color); font-weight: 400; }
+.diff-stats-message.is-identical { color: #1a7f37; font-weight: 600; }
+
+/* ===== <diff-client-diff-view> ===== */
+diff-client-diff-view { display: block; }
+.diff-view-placeholder {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted-text-color);
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+}
+.diff-view-split { display: grid; gap: 14px; }
+.diff-view-split.is-horizontal { grid-template-columns: 1fr 1fr; }
+.diff-view-split.is-vertical { grid-template-columns: 1fr; }
+
+/* ===== <diff-client-diff-pane> ===== */
+diff-client-diff-pane {
+    display: block;
+    min-width: 0; /* lets a grid cell shrink so the pane scrolls instead of stretching the page */
+    background: var(--surface-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.diff-pane-heading {
+    padding: 6px 12px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--filler-background);
+}
+.diff-pane-scroll { max-height: 60vh; overflow: auto; }
+.diff-pane-lines { display: inline-block; min-width: 100%; font: 13px/var(--line-height) var(--monospace-font); }
+.diff-pane-line { display: flex; min-height: var(--line-height); white-space: pre; }
+.diff-pane-number {
+    flex: none;
+    width: 48px;
+    padding-right: 8px;
+    text-align: right;
+    color: var(--muted-text-color);
+    user-select: none;
+}
+.diff-pane-sign { flex: none; width: 18px; text-align: center; user-select: none; }
+.diff-pane-text { flex: 1; padding-right: 12px; }
+.diff-pane-line.is-added { background: var(--added-background); }
+.diff-pane-line.is-removed { background: var(--removed-background); }
+.diff-pane-line.is-filler { background: var(--filler-background); }
+.diff-pane-line.is-added mark { background: var(--added-strong-background); color: inherit; }
+.diff-pane-line.is-removed mark { background: var(--removed-strong-background); color: inherit; }
